@@ -6,6 +6,15 @@
 > role DVIA-v2, iGoat, and the OWASP MASTG test apps play. It contains **no real
 > data** and must never be pointed at a real account.
 
+## How this was built (disclosure)
+
+The intentionally vulnerable app, its GitHub Actions build pipeline, and the
+initial writeup scaffolding were built rapidly with AI assistance ("vibe coded").
+That's deliberate: the engineering of the target isn't the point — the point is
+the **security analysis**. The flaws are intentionally planted (see
+`VULNERABILITIES.md`), and the recovery, verification against a real device, and
+findings in `writeups/` are the actual work this project is meant to demonstrate.
+
 Phase 1 focuses on **OWASP Mobile Top 10 — M9: Insecure Data Storage**
 (equivalently MASVS-STORAGE). Seven distinct storage flaws are planted, then
 recovered from the device with an all-Linux (Kali) toolchain — no jailbreak.
