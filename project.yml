@@ -1,0 +1,39 @@
+# XcodeGen spec. On the CI runner we run `xcodegen generate` to produce
+# PocketVault.xcodeproj — this keeps a hand-written project.pbxproj out of the
+# repo and lets the whole thing build on a Mac we never have to touch.
+name: PocketVault
+options:
+  bundleIdPrefix: com.tacogit.pocketvault
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    # Unsigned build for sideloading — signing is applied later by Sideloadly.
+    CODE_SIGNING_REQUIRED: "NO"
+    CODE_SIGNING_ALLOWED: "NO"
+    CODE_SIGN_IDENTITY: ""
+
+targets:
+  PocketVault:
+    type: application
+    platform: iOS
+    sources:
+      - path: PocketVault
+    info:
+      path: PocketVault/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: PocketVault
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.tacogit.pocketvault
+        GENERATE_INFOPLIST_FILE: "NO"
+        INFOPLIST_FILE: PocketVault/Resources/Info.plist
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SWIFT_VERSION: "5.0"

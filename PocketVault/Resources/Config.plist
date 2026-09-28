@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    VULN #3: secrets compiled into the app bundle. This whole file ships inside
+    Payload/PocketVault.app/ in the .ipa and is trivially readable. Fake values.
+-->
+<plist version="1.0">
+<dict>
+    <key>API_KEY</key>
+    <string>sk_live_51TAcoG1tPocketVaultDEMOkey0000deadbeef</string>
+    <key>API_BASE</key>
+    <string>http://api.pocketvault.example/v1</string>
+    <key>HMAC_SECRET</key>
+    <string>super-secret-signing-key-do-not-ship</string>
+</dict>
+</plist>

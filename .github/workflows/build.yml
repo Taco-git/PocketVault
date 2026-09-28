@@ -1,0 +1,55 @@
+name: Build unsigned IPA
+
+# Builds PocketVault on a GitHub-hosted macOS runner and uploads an UNSIGNED
+# .ipa as a workflow artifact. You download that artifact on Windows/Kali and
+# sign+install it with Sideloadly or AltStore using a free Apple ID.
+#
+# No Apple Developer account, no Mac of your own, no secrets required.
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:   # lets you trigger a build by hand from the Actions tab
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build (unsigned archive)
+        run: |
+          xcodebuild \
+            -project PocketVault.xcodeproj \
+            -scheme PocketVault \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath "$RUNNER_TEMP/PocketVault.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            archive
+
+      - name: Package .ipa (zip the unsigned .app into Payload/)
+        run: |
+          APP="$RUNNER_TEMP/PocketVault.xcarchive/Products/Applications/PocketVault.app"
+          mkdir -p "$RUNNER_TEMP/Payload"
+          cp -R "$APP" "$RUNNER_TEMP/Payload/"
+          cd "$RUNNER_TEMP"
+          zip -r -y PocketVault-unsigned.ipa Payload
+          ls -lh PocketVault-unsigned.ipa
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PocketVault-unsigned-ipa
+          path: ${{ runner.temp }}/PocketVault-unsigned.ipa
+          retention-days: 14

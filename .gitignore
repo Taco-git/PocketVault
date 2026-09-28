@@ -1,0 +1,10 @@
+# XcodeGen output — generated on CI, never committed
+PocketVault.xcodeproj/
+
+# Xcode / build junk
+build/
+DerivedData/
+*.xcarchive
+*.ipa
+.DS_Store
+xcuserdata/
