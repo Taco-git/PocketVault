@@ -2,7 +2,7 @@
 
 **Category:** OWASP Mobile M9 (Insecure Data Storage) / MASVS-STORAGE-1
 **Severity:** Critical
-**Target:** PocketVault 1.0, `com.tacogit.pocketvault`
+**Target:** PocketVault 1.0, `com.tacogit.pocketvault.N6QK377BQ8`
 
 ## Summary
 
@@ -17,24 +17,27 @@ file-protection class. Storing a CVV at all is a PCI-DSS violation on its own.
 
 ### Dynamic (Kali)
 ```bash
-# locate the DB inside the pulled container/backup, then:
-sqlite3 vault.sqlite '.tables'
-sqlite3 vault.sqlite 'SELECT holder,pan,cvv,expiry FROM cards;'
+sqlite3 ~/pentest/pv/Documents/vault.sqlite '.tables'
+# cards  transactions
+sqlite3 ~/pentest/pv/Documents/vault.sqlite 'SELECT holder,pan,cvv,expiry FROM cards;'
 # TACO TESTER|4539578763621486|451|11/28
-sqlite3 vault.sqlite 'SELECT merchant,amount FROM transactions;'
+sqlite3 ~/pentest/pv/Documents/vault.sqlite 'SELECT merchant,amount,memo FROM transactions;'
+# Hudson Valley Coffee|-4.75|latte
+# Payroll Deposit|2200.0|biweekly
+# Steam|-59.99|game
+# MTA Metro-North|-18.5|commute
 ```
 
 ## Impact
 
-Cardholder data fully exposed at rest — clone-able card, plus a spending profile
-useful for social engineering.
+Cardholder data fully exposed at rest — a clone-able card (PAN + CVV + expiry),
+plus a spending profile useful for social engineering.
 
 ## Remediation
 
 - Never persist the CVV; tokenize the PAN.
 - Encrypt the DB (SQLCipher) and/or set `NSFileProtectionComplete`.
-- Keep secrets off-device where the server can hold them instead.
+- Keep card data off-device where the server/PSP can hold it instead.
 
 ## Evidence
-
-_(attach: `sqlite3` session output)_
+`sqlite3` session output above, captured 2026-09-28.
